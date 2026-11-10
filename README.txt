@@ -1,3 +1,7 @@
+Hello! I'm keeping the README in case everyone needs this information.
+- Keana
+
+
 Hi everyone! Here's the login info for the users created in working through
 chapters 9 and 10. (There is one super user with admin privileges and 2 test
 users with regular privileges.)
