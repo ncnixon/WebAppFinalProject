@@ -20,3 +20,7 @@ test users:
 - Maya Oct 15 1:00 pm
 
 ______________________________________________________________
+
+test user:
+    username: MayasTest
+    password: Password12!
