@@ -1,10 +1,10 @@
-#from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
 from pages.models import TAProfile
-
-
-from .forms import CustomUserCreationForm
+from .forms import CustomUserCreationForm, StudentProfileForm
+from django.contrib.auth.decorators import login_required
+from .models import StudentProfile
 
 class SignUpView(CreateView):
     form_class = CustomUserCreationForm
@@ -23,3 +23,25 @@ class SignUpView(CreateView):
                 form.cleaned_data["courses"]
             )
         return response #login page redirect
+
+
+@login_required 
+
+def student_profile(request):
+    profile, created = StudentProfile.objects.get_or_create(
+        user = request.user
+    )
+
+    if request.method == "POST":
+        form = StudentProfileForm(request.POST, instance=profile)
+
+        if form.is_valid():
+            form.save()
+            return redirect("student_profile")
+    
+    else: 
+        form = StudentProfileForm(instance=profile)
+
+    return render(request, "accounts/student_profile.html", {
+        "form": form
+    })

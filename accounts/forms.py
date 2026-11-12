@@ -1,7 +1,8 @@
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from .models import CustomUser
+from .models import CustomUser, StudentProfile
 from django import forms
 from pages.models import Course
+
 
 class CustomUserCreationForm(UserCreationForm):
     #is_ta: designates TA assignment
@@ -31,4 +32,15 @@ class CustomUserChangeForm(UserChangeForm):
             "username",
             "email",
             "age",
+        )
+
+class StudentProfileForm(forms.ModelForm):
+    class Meta:
+        model = StudentProfile
+        fields = (
+            "display_name",
+            "major",
+            "graduation_year",
+            "bio", 
+            "interests"
         )
