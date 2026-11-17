@@ -3,12 +3,74 @@
 {% block title %}Student Profile{% endblock title %}
 
 {% block content %}
+{% if messages %}
+    {% for message in messages %}
+        <div class="status-message">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
     <h1>Student Profile</h1>
     <p>Fill out your information below.</p>
 
     <form method="POST">
         {% csrf_token %}
-        {{ form.as_p }}
+
+<fieldset class="profile-section">
+        <legend>Basic Information</legend>
+
+    <div class="form-field">
+        {{ form.display_name.label_tag }}
+        {{ form.display_name }}
+        {{ form.display_name.errors }}
+    </div>
+
+    <div class="form-field">
+        {{ form.major.label_tag }}
+        {{ form.major }}
+        {{ form.major.errors }}
+    </div>
+
+    <div class="form-field">
+        {{ form.graduation_year.label_tag }}
+        {{ form.graduation_year }}
+        {{ form.graduation_year.errors }}
+    </div>
+</fieldset>
+
+<fieldset class="profile-section">
+        <legend>About You</legend>
+
+    <div class="form-field">
+        {{ form.interests.label_tag }}
+        {{ form.interests }}
+        {{ form.interests.errors }}
+    </div>
+
+</fieldset>
+
+    <fieldset class="profile-section">
+        <legend>What Are You Looking For</legend>
+
+    <div class="form-field">
+            {{ form.looking_for.label_tag }}
+            {{ form.looking_for }}
+            {{ form.looking_for.errors }}
+    </div>
+
+</fieldset>
+
+<fieldset class="profile-section">
+        <legend>About Me</legend>
+
+    <div class="form-field">
+            {{ form.bio.label_tag }}
+            {{ form.bio }}
+            {{ form.bio.errors }}
+    </div>
+
+</fieldset>
+
         <button type="submit">Save Profile</button>
     </form>
 {% endblock content %}
