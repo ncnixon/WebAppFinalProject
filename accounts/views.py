@@ -5,6 +5,7 @@ from pages.models import TAProfile
 from .forms import CustomUserCreationForm, StudentProfileForm
 from django.contrib.auth.decorators import login_required
 from .models import StudentProfile
+from django.contrib import messages
 
 class SignUpView(CreateView):
     form_class = CustomUserCreationForm
@@ -24,23 +25,31 @@ class SignUpView(CreateView):
             )
         return response #login page redirect
 
-
+#only registered users can access profile page
 @login_required 
 
+
+# Retrieve an existing profile without creating a new one.
 def student_profile(request):
-    profile, created = StudentProfile.objects.get_or_create(
-        user = request.user
+    profile = StudentProfile.objects.filter(
+        user=request.user
+    ).first()
+
+    form = StudentProfileForm(
+        request.POST or None,
+        instance=profile
     )
 
     if request.method == "POST":
-        form = StudentProfileForm(request.POST, instance=profile)
 
         if form.is_valid():
-            form.save()
+            student_profile = form.save(commit=False) #prepare profile without save
+            student_profile.user = request.user #assc. profile with logged in user
+            student_profile.save() #sqlite save
+            form.save_m2m() #saves looking_for field
+            messages.success(request, "Your profile was saved successfully!")
             return redirect("student_profile")
     
-    else: 
-        form = StudentProfileForm(instance=profile)
 
     return render(request, "accounts/student_profile.html", {
         "form": form
