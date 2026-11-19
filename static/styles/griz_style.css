@@ -39,6 +39,13 @@ h2{
     padding-top: 1rem;
     padding-bottom: 1rem;
 }
+
+h4{
+    font-family: Quicksand;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
 /*-----------class and ids------------*/
 /*********base.html**********/
 .base-body{

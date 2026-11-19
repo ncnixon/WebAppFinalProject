@@ -1,29 +1,50 @@
+from datetime import date
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
 from pages.models import TAProfile
 from .forms import CustomUserCreationForm, StudentProfileForm
+from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from .models import StudentProfile
 from django.contrib import messages
 
 class SignUpView(CreateView):
     form_class = CustomUserCreationForm
-    success_url = reverse_lazy("login")
+    success_url = "/registration/finish_acc_setup/" #reverse_lazy("login")
     template_name = "registration/signup.html"
 
     def form_valid(self, form):
-        response = super().form_valid(form) #save new user  
+        birthday = form.cleaned_data.get("birthday")
 
-        if form.cleaned_data["is_ta"]: #is registered as TA?
-            ta_profile = TAProfile.objects.create( #creates TA profile
-                user=self.object
+        if birthday:
+            today = date.today()
+            age = (
+                today.year 
+                - birthday.year
+                - ((today.month, today.day) < (birthday.month, birthday.day))
             )
+        
+            if age < 16:
+                return render(self.request, "registration/age_too_young.html")
+        
+        
+        
+        response = super().form_valid(form) #save new user 
+        login(self.request, self.object) 
 
-            ta_profile.courses.set( #save courses selected
-                form.cleaned_data["courses"]
-            )
-        return response #login page redirect
+       
+       #if form.cleaned_data["is_ta"]: #is registered as TA?
+          #  ta_profile = TAProfile.objects.create( #creates TA profile
+            #    user=self.object
+           # )
+           # ta_profile.courses.set( #save courses selected
+             #   form.cleaned_data["courses"]
+           # )
+        #return redirect("finish_acc_setup")
+        return render(self.request, "registration/finish_acc_setup.html")
+        
+        #return response #login page redirect
 
 #only registered users can access profile page
 @login_required 
