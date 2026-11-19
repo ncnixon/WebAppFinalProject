@@ -1,0 +1,15 @@
+{% extends 'base.html'%}
+
+{% block title %}{{ object.title }}{% endblock title %}
+
+{% block content %}
+<div class="event-entry">
+    <h1>{{ object.title }}</h1>
+    <h4>Host: {{ object.event_host }} | Date: {{ object.date_time }} | Location: {{ object.location }}</h4>
+    <p>{{ object.description }}</p>
+</div>
+{% if event.event_host.pk == request.user.pk %}
+<p><a href="{% url 'event_update' event.pk %}">Edit</a> | 
+    <a href="{% url 'event_delete' event.pk %}">Delete</a></p>
+{% endif %}
+{% endblock content %}
