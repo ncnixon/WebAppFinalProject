@@ -36,7 +36,7 @@ body{
     margin: 0;
 }
 
-h1, h2{
+h1, h2, h4{
     font-family: Quicksand;
     padding-top: 1rem;
     padding-bottom: 1rem;
@@ -254,4 +254,15 @@ h1, h2{
     flex-direction: column;
     justify-content: center;
     align-items: center;
+}
+
+.hero-account-links{
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    gap: 10px;
+}
+
+#hero-title{
+    margin-top: 4rem;
 }

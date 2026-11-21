@@ -6,24 +6,34 @@ from pages.models import Course
 
 class CustomUserCreationForm(UserCreationForm):
     #is_ta: designates TA assignment
-    is_ta = forms.BooleanField(
-        required=False,
-        label="Register as a Teaching Assistant"
-    )
+    #is_ta = forms.BooleanField(
+        #required=False,
+        #label="Register as a Teaching Assistant"
+    #)
     #courses displays available courses
-    courses = forms.ModelMultipleChoiceField(
-        queryset=Course.objects.all(),
-        widget=forms.CheckboxSelectMultiple,
-        required=False,
-        label="Courses You Can Tutor"
-    )
+   # courses = forms.ModelMultipleChoiceField(
+       # queryset=Course.objects.all(),
+       # widget=forms.CheckboxSelectMultiple,
+       # required=False,
+       # label="Courses You Can Tutor"
+    #)
     class Meta:
         model = CustomUser
         fields = (
             "username",
+            "display_name",
+            "birthday",
             "email",
-            "age",
         )
+        labels = {
+            "display_name": "Display Name (you can change this later)", 
+            "email": "Email Address",
+        }
+
+        widgets = {
+            "birthday": forms.DateInput(attrs={"type": "date"}),
+            
+        }
 
 class CustomUserChangeForm(UserChangeForm):
     class Meta:
