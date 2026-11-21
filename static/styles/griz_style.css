@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap');   
+/*covik-sans,Arial,"sans-serif"*/
 
 @media (prefers-reduced-motion: reduce) {
   * {
@@ -18,6 +19,7 @@
     --light-orange: #D96704;
     --orange-red: #F23D3D;
     --light-blue: #BADCE5;
+    --white-blue: #E5F5F9;
     --dark-text: #21403A;
     --white: #FDFCFD;
 }
@@ -34,18 +36,19 @@ body{
     margin: 0;
 }
 
-h2{
+h1, h2{
     font-family: Quicksand;
     padding-top: 1rem;
     padding-bottom: 1rem;
 }
+
 /*-----------class and ids------------*/
 /*********base.html**********/
 .base-body{
     background-color: var(--cream);
     color: var(--dark-text);
 }
-
+/*~~~~~~~~navigation bar~~~~~~~~~*/
 #nav-bar{
     background-color: var(--maroon); 
     padding: 0.5rem; 
@@ -100,6 +103,61 @@ h2{
     background-color: var(--orange-red);
     text-decoration: underline;
 }
+
+#nav-main-menu{
+    display: flex;
+    justify-content: center;
+    margin-inline: auto;
+    gap: 3.5rem;
+
+}
+
+#nav-main-menu-item:hover{
+    text-decoration-color: var(--cream);
+    text-decoration-line: underline;
+    text-decoration-style: dotted;
+}
+
+#nav-main-menu-item a[aria-current="page"]{
+    background-color: var(--maroon-dark);
+
+}
+/*~~~~~~~profile dropdown~~~~~~~~~~*/
+#dropdown-square{
+    background-color: var(--cream);
+    border-width: 3px;
+    border-color: var(--maroon-dark);
+}
+
+#dropdown-link a{
+    background-color: var(--cream);
+    border-color: var(--maroon-dark);
+    color: var(--dark-text);
+}
+
+#dropdown-link a:hover{
+    background-color: var(--cream);
+    border-color: var(--maroon-dark);
+    color: var(--light-orange);
+}
+
+#dropdown-link-logout{
+    display: flex;
+    margin: auto;
+}
+
+#dropdown-link-logout:hover{
+    color: var(--orange-red)
+}
+
+/*~~~~~~~~~~~~~event dropdown~~~~~~~~~~~~~~~~*/
+#event-item a{
+    color: var(--dark-text);
+}
+/*~~~~~~~~~~~~~people dropdown~~~~~~~~~~~~~~~~*/
+#people-item a{
+    color: var(--dark-text);
+}
 /*********log-in***********/
 #login-btn{
     background-color: var(--cream); 
@@ -140,4 +198,60 @@ h2{
 
 .text-box{
     max-width: 40%;
+}
+/*************student profile************/
+#student-background{
+    display: grid;
+    grid-template-columns: auto;
+    background-color: var(--light-blue);
+    margin-top: 20px;
+    margin-bottom: 20px;
+    padding: 10px;
+    max-width: 50%;
+    justify-content: center;
+    margin-inline: auto;
+    font-family: Quicksand;
+    box-shadow: 10px 10px var(--maroon-dark);
+}
+
+#student-background fieldset{
+    background-color: var(--white-blue);
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+}
+
+#basic-info div{
+    padding-top: 8px;
+}
+
+#about-me div{
+    display: flex;
+    column-gap: 5px;
+    min-height: 8rem;
+}
+
+#save-btn{
+    background-color: var(--light-orange);
+    border-radius: 50px;
+    border-width: 2px;
+    border-color: var(--maroon-dark);
+    color: var(--white);
+    padding:5px;
+    min-width: 2rem;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-bottom: 1rem;
+}
+
+#save-btn:hover{
+    background-color: var(--orange-red);
+    color: var(--white);
+}
+/**********home page**************/
+.hero-section{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }

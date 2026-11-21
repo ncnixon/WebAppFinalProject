@@ -4,7 +4,7 @@
 
 {% block content %}
 {% if user.is_authenticated %}
-<p style="margin: 0; padding-top: 1rem; padding-bottom: 1rem;">Hi {{ user.username }}!</p>
+<p style="margin: 0; padding-top: 1rem; padding-bottom: 1rem;">Welcome, {{ user.username }} to OnlyFriends!</p>
 <form action="{% url 'logout' %}" method="post" style="padding-bottom: 2rem">
     {% csrf_token %}
     <button type="submit" style="background-color: #fdf1d8; color: #082434; border-color: #082434;">Log Out</button> |
@@ -15,9 +15,12 @@
     <button type="submit" style="background-color: #fdf1d8; color: #082434; border-color: #082434;">Profile</button>
 </form> -->
 {% else %}
-<p style="padding-top: 1rem">You are not logged in</p>
-<a href="{% url 'login' %}" style="text-decoration-style: dotted; color:#31718a">Log In</a> |
-<a href="{% url 'signup' %}" style="text-decoration-style: dotted; color:#31718a">Sign Up</a>
+<div class="hero-section">
+    <h1 id="hero-title">Welcome to OnlyFriends!</h1>
+    <p>The BEST place to find friends and events at the University of Montana.</p>
+    <a href="{% url 'login' %}" style="text-decoration-style: dotted; color:#31718a">Log In</a> |
+    <a href="{% url 'signup' %}" style="text-decoration-style: dotted; color:#31718a">Create an Account</a>
+</div>
 {% endif %}
 
 {% endblock content %}
