@@ -4,9 +4,78 @@
 {% block title %}Sign Up{% endblock title %}
 
 {% block content %}
-<h2>Sign Up</h2>
-<form method="post" class="text-box">{% csrf_token %}
-    {{ form|crispy }}
-    <button class="btn btn-success" type="submit" id="signup-btn">Sign Up</button>
-</form>
+<div class="container">
+    <div class="row justify-content-center">
+        
+        <div style="text-align: center; margin-top: 50px; margin-bottom: 20px; font-size: 50px; font-family: Quicksand;">
+            <a>Sign Up</a>
+        </div>
+
+        
+        <form method="post" class="text-box">
+            {% csrf_token %}
+            
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                        {{ form.username|as_crispy_field }}
+                        {{ form.display_name|as_crispy_field }}
+                        {{ form.email|as_crispy_field }}
+                </div>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-md-2">
+                        {{ form.birthday|as_crispy_field }}
+                </div>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                        {{ form.password1|as_crispy_field }}
+                        {{ form.password2|as_crispy_field }}
+                </div>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <button class="btn btn-success w-100" type="submit" id="signup-btn">Sign Up</button>
+                </div>
+            </div>
+
+            <div class="row justify-content-center">
+                    <a style="text-align: center; margin-bottom: 10px; font-family: Quicksand;">Already have an account?</a>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <a href="{% url 'login' %}" class="btn btn-success w-100" id="signup-btn">Login</a>                
+                </div>
+            </div>
+            
+            
+
+        </form>
+    </div>
+</div>
 {% endblock content %}
+
+
+
+
+
+
+
+{% comment %}
+    {% extends "base.html" %}
+    {% load crispy_forms_tags %}
+
+    {% block title %}Sign Up{% endblock title %}
+
+    {% block content %}
+    <h2>Sign Up</h2>
+    <form method="post" class="text-box">{% csrf_token %}
+        {{ form|crispy }}
+        <button class="btn btn-success" type="submit" id="signup-btn">Sign Up</button>
+    </form>
+    {% endblock content %}
+{% endcomment %}

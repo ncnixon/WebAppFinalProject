@@ -1,23 +1,90 @@
 {% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}OnlyFriends{% endblock title %}
+{% block content %}
+
+{% if user.is_authenticated %}
+    
+    <div style="text-align: center; margin-top: 200px;">
+        <h2>{{ user.display_name }}</h2>
+        <h2>@{{ user.username }}</h2>
+        <a>{{ user.birthday }}</a>
+        <a>{{ user.email }}</a>
+    </div>
+
+    <form action="{% url 'logout' %}" method="post" style="padding-bottom: 2rem">
+        {% csrf_token %}
+        <div style="text-align: center; margin-top: 20px;">
+            <button type="submit" style="background-color: #fdf1d8; color: #082434; border-color: #082434;">Log Out</button> |
+        </div>
+    </form>
+
+    <form action="{% url 'student_profile' %}" method="post" style="padding-bottom: 2rem">
+        {% csrf_token %}
+        <div style="text-align: center; margin-top: 20px;">
+            <button type="submit" style="background-color: #fdf1d8; color: #082434; border-color: #082434;">Profile</button>
+        </div>
+    </form>
+
+
+{% else %}
+    <div class="hero-section">
+        <h1 id="hero-title">Welcome to OnlyFriends!</h1>
+        <p>The BEST place to find friends and events at the University of Montana.</p>
+        <div class="hero-account-links">
+            <a href="{% url 'login' %}" style="text-decoration-style: dotted; color:#31718a">Log In</a> |
+            <a href="{% url 'signup' %}" style="text-decoration-style: dotted; color:#31718a">Create an Account</a>
+        </div>
+    </div>
+{% endif %}
+
+{% endblock content %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% comment %}
+{% extends "base.html" %}
 
 {% block title %}OnlyFriends{% endblock title %}
 
 {% block content %}
 {% if user.is_authenticated %}
-<p style="margin: 0; padding-top: 1rem; padding-bottom: 1rem;">Hi {{ user.username }}!</p>
+<p style="margin: 0; padding-top: 1rem; padding-bottom: 1rem;">Welcome, {{ user.username }} to OnlyFriends!</p>
 <form action="{% url 'logout' %}" method="post" style="padding-bottom: 2rem">
     {% csrf_token %}
     <button type="submit" style="background-color: #fdf1d8; color: #082434; border-color: #082434;">Log Out</button> |
     <a href="{% url 'student_profile' %}" style="text-decoration-style: dotted; color:#31718a">Profile</a>
 </form>
-<!-- <form action="{% url 'student_profile' %}" method="post" style="padding-bottom: 2rem">
+<form action="{% url 'student_profile' %}" method="post" style="padding-bottom: 2rem">
     {% csrf_token %}
     <button type="submit" style="background-color: #fdf1d8; color: #082434; border-color: #082434;">Profile</button>
-</form> -->
+</form>
 {% else %}
-<p style="padding-top: 1rem">You are not logged in</p>
-<a href="{% url 'login' %}" style="text-decoration-style: dotted; color:#31718a">Log In</a> |
-<a href="{% url 'signup' %}" style="text-decoration-style: dotted; color:#31718a">Sign Up</a>
+<div class="hero-section">
+    <h1 id="hero-title">Welcome to OnlyFriends!</h1>
+    <p>The BEST place to find friends and events at the University of Montana.</p>
+    <a href="{% url 'login' %}" style="text-decoration-style: dotted; color:#31718a">Log In</a> |
+    <a href="{% url 'signup' %}" style="text-decoration-style: dotted; color:#31718a">Create an Account</a>
+</div>
 {% endif %}
 
 {% endblock content %}
+{% endcomment %}

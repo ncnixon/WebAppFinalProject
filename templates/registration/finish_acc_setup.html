@@ -1,0 +1,14 @@
+
+{% extends "base.html" %}
+
+{% load crispy_forms_tags %}
+
+{% block title %}Title{% endblock title %}
+
+{% block content %}
+<div style="text-align: center; margin-top: 200px;">
+    <h2 style="margin-bottom: 20px;">Finish setting up your account</h2>
+    <h2 style="margin-bottom: 20px;">stuff here</h2>
+    <a href="{% url 'home' %}" class="btn btn-success" id="signup-btn">Save and view your profile</a>
+</div>
+{% endblock content %}
