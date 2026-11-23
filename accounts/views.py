@@ -20,20 +20,20 @@ class SignUpView(CreateView):
         if birthday:
             today = date.today()
             age = (
-                today.year 
+                today.year
                 - birthday.year
                 - ((today.month, today.day) < (birthday.month, birthday.day))
             )
-        
+
             if age < 16:
                 return render(self.request, "registration/age_too_young.html")
-        
-        
-        
-        response = super().form_valid(form) #save new user 
-        login(self.request, self.object) 
 
-       
+
+
+        response = super().form_valid(form) #save new user
+        login(self.request, self.object)
+
+
        #if form.cleaned_data["is_ta"]: #is registered as TA?
           #  ta_profile = TAProfile.objects.create( #creates TA profile
             #    user=self.object
@@ -43,11 +43,11 @@ class SignUpView(CreateView):
            # )
         #return redirect("finish_acc_setup")
         return render(self.request, "registration/finish_acc_setup.html")
-        
+
         #return response #login page redirect
 
 #only registered users can access profile page
-@login_required 
+@login_required
 
 
 # Retrieve an existing profile without creating a new one.
@@ -70,7 +70,7 @@ def student_profile(request):
             form.save_m2m() #saves looking_for field
             messages.success(request, "Your profile was saved successfully!")
             return redirect("student_profile")
-    
+
 
     return render(request, "accounts/student_profile.html", {
         "form": form

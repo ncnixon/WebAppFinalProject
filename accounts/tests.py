@@ -44,14 +44,42 @@ class SignupPageTests(TestCase):
             reverse("signup"),
             {
                 "username": "testuser",
+                "display_name": "Test Student",
+                "birthday": "2000-05-15",
                 "email": "testuser@email.com",
                 "password1": "testpass123",
                 "password2": "testpass123",
             },
         )
-        self.assertEqual(response.status_code, 302)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "registration/finish_acc_setup.html")
         self.assertEqual(get_user_model().objects.all().count(), 1)
         self.assertEqual(get_user_model().objects.all()[0].username, "testuser")
         self.assertEqual(
             get_user_model().objects.all()[0].email, "testuser@email.com"
+        )
+
+    #
+    def test_underage_signup_does_not_create_user(self):
+        response = self.client.post(
+            reverse("signup"),
+            {
+                "username": "youngstudent",
+                "display_name": "Young Student",
+                "birthday": "2015-05-15",
+                "email": "youngstudent@email.com",
+                "password1": "testpass123",
+                "password2": "testpass123",
+            }
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(
+            response, "registration/age_too_young.html"
+        )
+        self.assertFalse(
+            get_user_model().objects.filter(
+                username="youngstudent"
+            ).exists()
         )
