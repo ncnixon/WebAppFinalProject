@@ -13,6 +13,7 @@
 <p>Available public events</p>
 {% endif %}
 {% for event in event_list %}
+{% if event.private == False or event.event_host == request.user %}
 <div class="card">
     <div class="card-header">
         <span class="fw-bold">
@@ -26,6 +27,7 @@
     </div>
 </div>
 <br />
+{% endif %}
 {% endfor %}
 {% endif %}
 {% endblock content %}
