@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}Events{% endblock title %}
+
+{% block content %}
+<h1>Events List</h1>
+{% if not event_list %}
+<h4>No events available. <a href="{% url 'event_create' %}">Host the first one!</a></h4>
+{% else %}
+{% if user.is_authenticated %}
+<p>Available public events | <a href="{% url 'event_create' %}">Host a new event</a></p>
+{% else %}
+<p>Available public events</p>
+{% endif %}
+{% for event in event_list %}
+{% if event.private == False or event.event_host == request.user %}
+<div class="card">
+    <div class="card-header">
+        <span class="fw-bold">
+            <a href="{{ event.get_absolute_url }}">{{ event.title }}</a>
+        </span>
+        <span class="text-muted">Hosted by {{ event.event_host }} |
+            {{ event.date_time }} | {{ event.location }}</span>
+    </div>
+    <div class="card-body">
+        {{ event.description }}
+    </div>
+</div>
+<br />
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endblock content %}
