@@ -18,6 +18,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from django.views.generic.base import TemplateView
+#below imports are for profile pic
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -25,3 +28,6 @@ urlpatterns = [
     path("accounts/", include("django.contrib.auth.urls")),
     path("", include("pages.urls")),
 ]
+#stuff for profile pic. will likely need to change before deploying when we setup an actual pic storage system
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -3,16 +3,16 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
 from pages.models import TAProfile
-from .forms import CustomUserCreationForm, StudentProfileForm
+from .forms import CustomUserCreationForm, CustomUserChangeForm, StudentProfileForm
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
-from .models import StudentProfile
+from .models import StudentProfile, CustomUser
 from django.contrib import messages
 
 class SignUpView(CreateView):
     form_class = CustomUserCreationForm
-    success_url = "/registration/finish_acc_setup/" #reverse_lazy("login")
     template_name = "registration/signup.html"
+    success_url = reverse_lazy("finish_acc_setup") #"/registration/finish_acc_setup/" #reverse_lazy("login")
 
     def form_valid(self, form):
         birthday = form.cleaned_data.get("birthday")
@@ -34,22 +34,13 @@ class SignUpView(CreateView):
         login(self.request, self.object) 
 
        
-       #if form.cleaned_data["is_ta"]: #is registered as TA?
-          #  ta_profile = TAProfile.objects.create( #creates TA profile
-            #    user=self.object
-           # )
-           # ta_profile.courses.set( #save courses selected
-             #   form.cleaned_data["courses"]
-           # )
-        #return redirect("finish_acc_setup")
-        return render(self.request, "registration/finish_acc_setup.html")
+       
+        #return render(self.request, "registration/finish_acc_setup.html")
         
-        #return response #login page redirect
+        return response #login page redirect
 
 #only registered users can access profile page
 @login_required 
-
-
 # Retrieve an existing profile without creating a new one.
 def student_profile(request):
     profile = StudentProfile.objects.filter(
@@ -75,3 +66,22 @@ def student_profile(request):
     return render(request, "accounts/student_profile.html", {
         "form": form
     })
+
+@login_required
+def finish_acc_setup(request):
+
+    if request.method == "POST":
+        form = CustomUserChangeForm(request.POST, request.FILES, instance=request.user)
+
+        if form.is_valid(): 
+            stuff = form.save(commit=False)
+            stuff.user = request.user
+            stuff.save()
+            form.save()#_m2m()
+            messages.success(request, "Your profile was saved successfully!")
+            return redirect("home")
+    else:
+        #auto populate with existing profile data if available otherwise omit instance
+        form = CustomUserChangeForm(instance=request.user)
+
+    return render(request, "registration/finish_acc_setup.html", {"form": form})

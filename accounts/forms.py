@@ -35,18 +35,97 @@ class CustomUserCreationForm(UserCreationForm):
             
         }
 
+
+
 class CustomUserChangeForm(UserChangeForm):
+    password = None
+
+    interests = forms.MultipleChoiceField(
+            choices=CustomUser.INTERESTS,
+            widget=forms.SelectMultiple(attrs={
+                #"id": "interests-select",
+                "placeholder": "Search or select interests..."
+            }),
+            required=False,
+        )
+    bio = forms.CharField(
+        widget=forms.Textarea(attrs={
+            "rows": 3,
+            "placeholder": "Tell other students a little about yourself..."
+        }),
+        required=False,
+    )
+    certificate = forms.MultipleChoiceField(
+            choices=CustomUser.CERTIFICATES,
+            widget=forms.SelectMultiple(attrs={
+                #"id": "interests-select",
+                "placeholder": "Search or select a certificate..."
+            }),
+            required=False,
+        )
+    minor = forms.MultipleChoiceField(
+            choices=CustomUser.MINORS,
+            widget=forms.SelectMultiple(attrs={
+                #"id": "interests-select",
+                "placeholder": "Search or select a minor..."
+            }),
+            required=False,
+        )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.instance and self.instance.pk and self.instance.interests:
+            self.initial["interests"] = self.instance.interests
+
+    
+
+
     class Meta:
         model = CustomUser
         fields = (
-            "username",
+            "display_name",
             "email",
-            "age",
+            "year",
+            "major_type",
+            "major",
+            "minor",
+            "certificate",
+            "interests",
+            "bio",
+            #"friends",
+            "profile_pic",
         )
+        labels = {
+            "display_name": "Display Name", 
+            "email": "Email Address",
+            "major_type": "Degree Type",
+            "minor": "Minor(s)",
+            "certificate": "Certificate(s)",
+        }
+        widgets = {
+            "birthday": forms.DateInput(attrs={"type": "date"}),
+        }
+    def clean_interests(self):
+        interests = self.cleaned_data.get("interests")
+        if not interests or len(interests) < 3:
+            raise forms.ValidationError("Please select at least 3 interests.")
+        return interests
+    
+    def clean_minor(self):
+        minor = self.cleaned_data.get("minor")
+        if len(minor) > 3:
+            raise forms.ValidationError("Please select no more than 3 minors.")
+        return minor
+    
+    def clean_certificate(self):
+        certificate = self.cleaned_data.get("certificate")
+        if len(certificate) > 3:
+            raise forms.ValidationError("Please select no more than 3 certificates.")
+        return certificate
+
+
 
 class StudentProfileForm(forms.ModelForm):
-
-
     graduation_year = forms.TypedChoiceField(
     choices=[
         ("", "Select One"),
@@ -59,6 +138,7 @@ class StudentProfileForm(forms.ModelForm):
         (2032, "2032"),
     ],
     coerce=int,
+    empty_value=None,
     required=False,
     widget=forms.Select()
 )

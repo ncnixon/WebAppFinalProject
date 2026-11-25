@@ -5,11 +5,67 @@
 {% block content %}
 
 {% if user.is_authenticated %}
-    <div style="text-align: center; margin-top: 200px;">
-        <h2>{{ user.display_name }}</h2>
-        <h2>@{{ user.username }}</h2>
-        <a>{{ user.birthday }}</a>
-        <a>{{ user.email }}</a>
+    <div class="row">
+        
+        <div style="flex: 1">
+            <div style="margin-top: 20px">
+                {% if user.profile_pic %}
+                    <img src="{{ user.profile_pic.url }}" alt="{{ user.display_name }}" 
+                        style="width: 250px; height: 250px; border-radius: 50%; object-fit: cover;">
+                {% else %}
+                    <!-- Fallback default avatar -->
+                    <div style="width: 250px; height: 250px; border-radius: 50%; background: #ccc;"></div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div style="flex: 6">
+            <div style="text-align: left; margin-left: 50px; margin-top: 45px; font-size: 70px; font-family: Quicksand; font-weight: semibold;">
+                <a>{{ user.display_name }}</a>
+            </div>
+
+            <div style="text-align: left; margin-left: 50px; margin-top: 5px; margin-bottom: 50px; font-size: 25px; font-family: Quicksand;">
+                <p>@{{ user.username }}</p>
+                <p>{{ user.email }}</p>
+            </div>
+
+        </div>
+
+
+    </div>
+    
+    
+
+    <div class="row" style="display: flex; gap: 40px; margin-left: 50px;">
+        <div style="flex: 1; text-align: left; font-size: 25px; font-family: Quicksand;">
+            <p>Degree: {{ user.major_type }} in {{ user.major }}</p>
+            <p>Minor(s): {{ user.minor| join:", "  }}</p>
+            <p>Certificate(s): {{ user.certificate| join:", "  }}</p>
+
+        </div>
+
+        <div style="flex: 1; text-align: left; font-size: 25px; font-family: Quicksand;">
+            <p>Birthday: {{ user.birthday }} 🎂</p>
+            <p>Year: {{ user.year }}</p>
+        </div>
+    </div>
+    
+    <div class="row" style="display: flex; gap: 40px; margin-left: 50px;">
+        <div style="flex: 1; text-align: left; font-size: 25px; font-family: Quicksand;">
+            <p>Interests: {{ user.interests| join:", " }}</p>
+        </div>
+
+
+        <div style="flex: 1; text-align: left; font-size: 25px; font-family: Quicksand;">
+            <h5 class="card-header" style="text-align: center; background-color: var(--light-orange); border: 2px solid var(--maroon); font-family: Quicksand;">Bio:</h5>
+            
+            <div class="card-body" style="text-align: center; border: 2px solid var(--maroon)">
+                <p class="card-text">
+                    {{ user.bio }}
+                </p>
+            </div>
+        </div>
+
     </div>
 
     <form action="{% url 'logout' %}" method="post" style="padding-bottom: 2rem">
@@ -19,12 +75,13 @@
         </div>
     </form>
 
-    <form action="{% url 'student_profile' %}" method="post" style="padding-bottom: 2rem">
-        {% csrf_token %}
-        <div style="text-align: center; margin-top: 20px;">
-            <button type="submit" style="background-color: #fdf1d8; color: #082434; border-color: #082434;">Profile</button>
-        </div>
-    </form>
+
+    <div style="text-align: center; margin-top: 20px; padding-bottom: 2rem;">
+        <a href="{% url 'finish_acc_setup' %}" class="btn" style="background-color: #fdf1d8; color: #082434; border-color: #082434;">
+            Edit Profile
+        </a>
+    </div>
+
 
 
 {% else %}

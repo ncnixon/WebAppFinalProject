@@ -1,14 +1,261 @@
-
 {% extends "base.html" %}
-
 {% load crispy_forms_tags %}
 
 {% block title %}Title{% endblock title %}
-
 {% block content %}
-<div style="text-align: center; margin-top: 200px;">
-    <h2 style="margin-bottom: 20px;">Finish setting up your account</h2>
-    <h2 style="margin-bottom: 20px;">stuff here</h2>
-    <a href="{% url 'home' %}" class="btn btn-success" id="signup-btn">Save and view your profile</a>
+<link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.bootstrap5.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/cropperjs@1.6.1/dist/cropper.min.css" />
+
+<style>
+    /* profile view stuff */
+    .cropper-view-box {
+        border-radius: 50%;
+        outline: 2px solid #ffffff;
+        outline-color: rgba(255, 255, 255, 0.9);
+    }
+
+    .cropper-face {
+        border-radius: 50%;
+    }
+
+    /* hide the square grid lines inside the circle*/
+    .cropper-dashed,
+    .cropper-center {
+        display: none;
+    }
+
+    .crop-container {
+        width: 100%;
+        height: 350px;
+        margin: 15px auto;
+        background-color: #1a1a1a;
+        border-radius: 8px;
+        overflow: hidden;
+        display: none;
+    }
+
+    .circular-preview {
+        width: 130px;
+        height: 130px;
+        border-radius: 50%;
+        overflow: hidden;
+        margin: 0 auto 15px auto;
+        border: 2px solid #dee2e6;
+        background-color: #f8f9fa;
+        position: relative;
+    }
+
+    .circular-preview img.existing-avatar {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+</style>
+
+<div class="container">
+    {# stuff to test if things are being passed correctly <p style="color: red;">DB Check: user {{ request.user }} email {{ request.user.email }} | username {{ request.user.username }} | name {{ request.user.display_name }} | major type {{ request.user.major_type }}| major {{ request.user.major }}| year {{ request.user.year }} | bio{{ request.user.bio }} | interests{{ request.user.interests }} {{ form.is_bound }}</p> #}
+
+    <div class="row justify-content-center">
+        
+        <div style="text-align: center; margin-top: 50px; margin-bottom: 20px; font-size: 50px; font-family: Quicksand;">
+            <a>Edit your profile</a>
+        </div>
+        
+        <form method="post" enctype="multipart/form-data" class="text-box" id="profileForm">
+            {% csrf_token %}
+            
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+
+                    <div class="text-center mb-4">
+                        <label for="imageInput" class="form-label fw-bold">Profile Picture</label>
+                        
+                        <div class="circular-preview" id="previewCircle">
+                            {% if request.user.profile_pic %}
+                                <img src="{{ request.user.profile_pic.url }}" alt="Profile Picture" class="existing-avatar">
+                            {% else %}
+                                <span class="text-muted small" style="line-height: 126px;">No Photo</span>
+                            {% endif %}
+                        </div>
+
+                        <input type="file" name="profile_pic" id="imageInput" accept="image/*" class="form-control mb-2">
+                    
+                        <div class="crop-container" id="cropContainer">
+                            <img id="imageToCrop" style="max-width: 100%; display: block;">
+                        </div>
+
+                        <div class="d-none mt-2" id="cropControls">
+                            <div class="btn-group btn-group-sm mb-1" role="group">
+                                <button type="button" class="btn btn-outline-secondary" id="zoomOutBtn">- Zoom Out</button>
+                                <button type="button" class="btn btn-outline-secondary" id="zoomInBtn">+ Zoom In</button>
+                                <button type="button" class="btn btn-outline-secondary" id="resetCropBtn">Reset</button>
+                            </div>
+                            <div>
+                                <small class="text-muted">
+                                    Drag the circle to move it • Drag corners to resize • Drag outside to pan image
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{ form.display_name|as_crispy_field }}
+
+                    {{ form.email|as_crispy_field }}
+
+                    {{ form.year|as_crispy_field }}
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{ form.major_type|as_crispy_field }}
+                        </div>
+                        
+                        <div class="col-md-6">
+                            {{ form.major|as_crispy_field }}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{ form.minor|as_crispy_field }}
+                        </div>
+                        
+                        <div class="col-md-6">
+                            {{ form.certificate|as_crispy_field }}
+                        </div>
+                    </div>
+
+                    {{ form.interests|as_crispy_field }}
+
+                    {{ form.bio|as_crispy_field }}
+                </div>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <button class="btn btn-success w-100" type="submit" id="signup-btn">Save Changes</button>
+                </div>
+            </div>
+            
+        </form>
+    </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/cropperjs@1.1/dist/cropper.min.js"></script>
+
+{# stuff for making the major type to major conneciton work, initalizing tom select on fields with searchable wigit thing, and profile pic crop logic #}
+<script>
+    const majorsByType = {
+        "BA": ["Math", "Visual Arts", "Sculpting"],
+        "BS": ["Computer Science", "Forestry", "Astronomy"],
+    };
+    const typeSelect = document.getElementById("id_major_type");
+    const majorSelect = document.getElementById("id_major");
+    const initialMajor = "{{ form.major.value|default:'' }}";
+
+    function updateMajors() {
+        const selectedType = typeSelect.value;
+        const currentMajor = majorSelect.value || initialMajor;
+        majorSelect.innerHTML = '<option value="">Select a major</option>';
+
+        if (!selectedType) {
+            majorSelect.disabled = true;
+            return;
+        }
+
+        majorSelect.disabled = false;
+        (majorsByType[selectedType] || []).forEach((major) => {
+            const option = new Option(major, major);
+            if (major === currentMajor) option.selected = true;
+            majorSelect.add(option);
+        });
+    }
+    typeSelect.addEventListener("change", updateMajors);
+    updateMajors();
+
+
+
+    const tomSelectConfig = {
+        plugins: ["remove_button"],
+        maxOptions: null,
+        create: false
+    };
+
+    ["#id_interests", "#id_certificate", "#id_minor"].forEach((selector) => {
+        if (document.querySelector(selector)) {
+            new TomSelect(selector, tomSelectConfig);
+        }
+    });
+
+
+
+    const imageInput = document.getElementById("imageInput");
+    const imageToCrop = document.getElementById("imageToCrop");
+    const cropContainer = document.getElementById("cropContainer");
+    const cropControls = document.getElementById("cropControls");
+    const profileForm = document.getElementById("profileForm");
+    let cropper = null;
+
+    imageInput.addEventListener("change", function (e) {
+        const files = e.target.files;
+        if (files && files.length > 0) {
+            const reader = new FileReader();
+            reader.onload = function (event) {
+                imageToCrop.src = event.target.result;
+                cropContainer.style.display = "block";
+                cropControls.classList.remove("d-none");
+
+                if (cropper) {
+                    cropper.destroy();
+                }
+
+                cropper = new Cropper(imageToCrop, {
+                    aspectRatio: 1,
+                    viewMode: 1,
+                    dragMode: "move",
+                    autoCropArea: 0.8,
+                    cropBoxMovable: true,
+                    cropBoxResizable: true,
+                    zoomOnWheel: true,
+                    preview: "#previewCircle"
+                });
+            };
+            reader.readAsDataURL(files.item(0));
+        }
+    });
+
+    document.getElementById("zoomInBtn").addEventListener("click", function () {
+        if (cropper) cropper.zoom(0.1);
+    });
+
+    document.getElementById("zoomOutBtn").addEventListener("click", function () {
+        if (cropper) cropper.zoom(-0.1);
+    });
+
+    document.getElementById("resetCropBtn").addEventListener("click", function () {
+        if (cropper) cropper.reset();
+    });
+
+    profileForm.addEventListener("submit", function (e) {
+        if (cropper) {
+            e.preventDefault();
+
+            if (!profileForm.checkValidity()) {
+                profileForm.reportValidity();
+                return;
+            }
+            cropper.getCroppedCanvas({
+                width: 400,
+                height: 400
+            }).toBlob(function (blob) {
+                const croppedFile = new File([blob], "profile_pic.png", { type: "image/png" });
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(croppedFile);
+                imageInput.files = dataTransfer.files;
+
+                profileForm.submit();
+            }, "image/png");
+        }
+    });
+</script>
 {% endblock content %}
